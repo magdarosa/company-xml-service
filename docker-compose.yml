@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Main application service
+  company-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: company-xml-service
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/companies/1', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Development service (alternative to main service)
+  company-api-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: company-xml-service-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    profiles:
+      - dev
+    restart: unless-stopped
+
+networks:
+  default:
+    name: company-api-network
