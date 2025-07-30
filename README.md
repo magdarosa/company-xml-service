@@ -59,7 +59,7 @@ GET /companies/1
 **Run with Docker:**
 ```bash
 # Clone the repository
-git clone 
+git clone https://github.com/magdarosa/company-xml-service
 cd company-xml-service
 
 # Install dependencies first
